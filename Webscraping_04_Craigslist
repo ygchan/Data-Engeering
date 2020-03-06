@@ -1,0 +1,126 @@
+{
+ "cells": [
+  {
+   "cell_type": "code",
+   "execution_count": 1,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Practice web scraping using BS4\n",
+    "# Website: Craigslist - Because I want to get a new PC :)\n",
+    "\n",
+    "import requests\n",
+    "from bs4 import BeautifulSoup"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 4,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# get the data\n",
+    "url = \"https://newyork.craigslist.org/d/computers/search/sya\"\n",
+    "data = requests.get(url)\n",
+    "\n",
+    "# load data into bs4\n",
+    "soup = BeautifulSoup(data.text, \"html.parser\")"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 22,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "$300       | Mid 2010 Apple iMac 27\" I7 2.93GHz 16GB 1TB 1GB Video High Sierra\n",
+      "$750       | Unused 12\" MacBook (2016, 1.2 m5/8GB/500GB/1 Battery cycle), MS Office\n",
+      "$750       | 12” Apple Macbook Retina (Early 2015) Space Gray SSD\n",
+      "$550       | 15\" Retina MacBook Pro (2.6 QUAD Core i7/8GB/500GB/73 Battery Cycles)\n",
+      "$700       | 2015 MacBook Pro (13\"), 2.7GHz i5/8GB/256GB, Model with all PORTS\n",
+      "$750       | Unused 12\" MacBook (2016, 1.2 m5/8GB/500GB/1 Battery cycle), MS Office\n",
+      "$60        | Apple Macbook Adapters\n",
+      "$375       | 2015 Apple MacBook Air Core i5 1.6GHz 8GB RAM 128GB SSD 13”\n",
+      "$300       | MacBook Pro 13-Inch Core i5 Retina 2012 - Very good condition\n",
+      "$899       | Mac mini\n",
+      "$350       | 27 inch Imac (2010)\n",
+      "$655       | MacBook 2015 - 500GB, Retina Display\n",
+      "$500       | Mid-2010 21.5\" iMac 3.6GHz i5, 8Gb RAM, 600Gb SSD\n",
+      "$65        | iMac 7.1 20\" Apple computer\n",
+      "$1800      | Apple MacBook Pro (15-inch, 2017, Silver)\n",
+      "$200       | Late 2009 Apple iMac 27\" MB952LL/A 1TB Sierra\n",
+      "$800       | Mac Pro 12 core, RX580 8GB video card, 500GB SSD MINT CONDITION\n",
+      "$1800      | (With New Battery & Programs) -- Macbook Pro for photo, video, music\n",
+      "$320       | MacBook Pro MD101LL/A 13.3-Inch\n",
+      "$20        | Mac OSX Tiger 10.4 Original install disc, in the box with the manual\n",
+      "$1000      | New In Sealed Box MacBook Air 13” 2019\n",
+      "$65        | Seagate 2.5\" 2TB SATA PC Macbook laptop Hard Drive PS4 Play Station\n",
+      "$30        | Mac Pro ram. 16GB (2GB x 8) See it tested\n",
+      "$1100      | Mac Pro 5,1/ 3.46GHz 12 core. 32GB ram. RX 580 8GB graphics. 500GB SSD\n",
+      "$350       | macbook pro 13\"\n",
+      "$550       | Apple MacBook Air (2017) 13\" 1.8 Ghz i5 8GB RAM 256GB SSD\n",
+      "$2100      | Apple MacBook Pro 15-Inch \"Core i7\" 2.6 Touch/2018 (Space Gray)\n",
+      "$650       | Apple Mac Macbook Pro 15\" laptop i5 8 gb ram\n",
+      "$250       | Apple Imac 21.5in Mid-2011 - 2.5Ghz Intel i5, 8GB RAM *****\n",
+      "$450       | Macpro 5,1 3.46Ghz 4Core, 16GB, 1TB HD MacOS 10.13 High Sierra Mac Pro\n",
+      "$360       | Early 2014 13 in Macbook Air New Battery\n",
+      "$300       | 13\" MacBook Air Intel i5 SSD\n",
+      "$260       | MacBook Air, i7, 2013, plus accessories bundle\n"
+     ]
+    }
+   ],
+   "source": [
+    "# Look for the result-info <p> tags\n",
+    "result_info = soup.find_all('p', {'class':'result-info'})\n",
+    "\n",
+    "# Each result-info tag has one listing\n",
+    "for result in result_info:\n",
+    "    # Title of the post item\n",
+    "    title = result.find('a', {'class':\"result-title hdrlnk\"}).text\n",
+    "    \n",
+    "    # Price of the post item\n",
+    "    price = result.find('span', {'class':'result-price'}).text\n",
+    "    \n",
+    "    # Use regular expression to get the Year of machine\n",
+    "    import re\n",
+    "    \n",
+    "    year_re = re.compile(r'.*(20/d/d).*')\n",
+    "    \n",
+    "    # Only want MAC Machines\n",
+    "    if 'mac' in title.lower():\n",
+    "        print(price.ljust(10), '|', title)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.7.3"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 2
+}
